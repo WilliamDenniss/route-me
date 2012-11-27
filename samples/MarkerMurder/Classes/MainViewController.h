@@ -15,4 +15,7 @@
 
 - (void)updateInfo;
 
+- (IBAction) mapModeChanged:(id)sender;
+- (IBAction) showMe:(id)sender;
+
 @end

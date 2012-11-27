@@ -21,6 +21,7 @@
     MainViewController *viewController = [[[MainViewController alloc] initWithNibName:@"MainView" bundle:nil] autorelease];
     self.mainViewController = viewController;
 
+	mainViewController.view.frame = self.view.bounds;
     [self.view insertSubview:mainViewController.view belowSubview:infoButton];
 }
 

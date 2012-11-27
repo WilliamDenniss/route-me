@@ -13,8 +13,8 @@
 @synthesize rootViewController;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application
-{    
-    [window addSubview:[rootViewController view]];
+{
+	window.rootViewController = rootViewController;
     [window makeKeyAndVisible];
 }
 

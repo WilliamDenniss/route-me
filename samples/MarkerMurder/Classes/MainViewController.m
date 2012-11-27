@@ -18,11 +18,13 @@
 #import "RMQuadTree.h"
 #import "RMCoordinateGridSource.h"
 #import "RMOpenCycleMapSource.h"
+#import "RMMapBoxSource.h"
+#import "RMUserLocation.h"
 
 @implementation MainViewController
 {
     CLLocationCoordinate2D center;
-
+	
     BOOL tapped;
     NSUInteger tapCount;
 }
@@ -35,14 +37,14 @@
 {
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]))
         return nil;
-
+	
     //Notifications for tile requests.  This code allows for a class to know when a tile is requested and retrieved
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tileRequested:) name:@"RMTileRequested" object:nil ];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tileRetrieved:) name:@"RMTileRetrieved" object:nil ];
-
+	//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tileRequested:) name:@"RMTileRequested" object:nil ];
+	//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tileRetrieved:) name:@"RMTileRetrieved" object:nil ];
+	
     tapped = NO;
     tapCount = 0;
-
+	
     return self;
 }
 
@@ -66,24 +68,24 @@
 - (void)addMarkers
 {
 	CLLocationCoordinate2D markerPosition;
-
+	
 	UIImage *redMarkerImage = [UIImage imageNamed:@"marker-red.png"];
 	UIImage *blueMarkerImage = [UIImage imageNamed:@"marker-blue.png"];
-
+	
 	markerPosition.latitude = center.latitude - ((kNumberRows - 1)/2.0 * kSpacing);
-
+	
 	for (int i = 0; i < kNumberRows; i++)
     {
 		markerPosition.longitude = center.longitude - ((kNumberColumns - 1)/2.0 * kSpacing);
-
+		
 		for (int j = 0; j < kNumberColumns; j++)
         {
 			markerPosition.longitude += kSpacing;
-
+			
 			NSLog(@"Add marker @ {%f,%f} = {%f,%f}", markerPosition.longitude, markerPosition.latitude, [mapView coordinateToProjectedPoint:markerPosition].x, [mapView coordinateToProjectedPoint:markerPosition].y);
-
+			
             RMAnnotation *annotation = [RMAnnotation annotationWithMapView:mapView coordinate:markerPosition andTitle:[NSString stringWithFormat:@"%4.1f", markerPosition.longitude]];
-
+			
             if ((markerPosition.longitude < -180) || (markerPosition.longitude > 0))
             {
                 annotation.annotationIcon = redMarkerImage;
@@ -94,17 +96,17 @@
                 annotation.annotationIcon = blueMarkerImage;
                 annotation.anchorPoint = CGPointMake(0.5, 1.0);
             }
- 
+			
             [mapView addAnnotation:annotation];
 		}
-
+		
 		markerPosition.latitude += kSpacing;
 	}
-
+	
     RMAnnotation *circleAnnotation = [RMAnnotation annotationWithMapView:mapView coordinate:CLLocationCoordinate2DMake(47.4, 10.0) andTitle:@"A Circle"];
     circleAnnotation.annotationType = kCircleAnnotationType;
     [mapView addAnnotation:circleAnnotation];
-
+	
     RMAnnotation *draggableAnnotation = [RMAnnotation annotationWithMapView:mapView coordinate:CLLocationCoordinate2DMake(47.72, 10.2) andTitle:@"Drag me! Tap me!"];
     draggableAnnotation.annotationType = kDraggableAnnotationType;
     draggableAnnotation.annotationIcon = [UIImage imageNamed:@"marker-blue.png"];
@@ -116,104 +118,162 @@
     [mapView addAnnotation:draggableAnnotation];
 }
 
+
+- (IBAction) showMe:(id)sender
+{
+	[mapView setCenterCoordinate:mapView.userLocation.coordinate animated:YES];
+}
+
+- (IBAction) mapModeChanged:(id)sender
+{
+	UISegmentedControl* seg = (UISegmentedControl*) sender;
+	
+	[self setTileSet:(seg.selectedSegmentIndex == 0)];
+}
+
+- (void) setTileSet:(BOOL)osm
+{
+	float currentZoom = mapView.zoom;
+	CLLocationCoordinate2D currentLocation = [mapView centerCoordinate];
+
+	if (osm)
+	{
+		mapView.tileSource = nil;
+		mapView.tileSource = [[RMOpenStreetMapSource alloc] init];
+		mapView.adjustTilesForRetinaDisplay = YES;
+	}
+	else
+	{
+#define kNormalRegularSourceURL [NSURL URLWithString:@"http://a.tiles.mapbox.com/v3/justin.map-s2effxa8.jsonp"]
+#define kRetinaRegularSourceURL [NSURL URLWithString:@"http://a.tiles.mapbox.com/v3/justin.map-kswgei2n.jsonp"]
+#define kNormalTerrainSourceURL [NSURL URLWithString:@"http://a.tiles.mapbox.com/v3/justin.map-ngrqqx0w.jsonp"]
+#define kRetinaTerrainSourceURL [NSURL URLWithString:@"http://a.tiles.mapbox.com/v3/justin.map-nq0f1vuc.jsonp"]
+		
+		mapView.tileSource = [[RMMapBoxSource alloc] initWithReferenceURL:(([[UIScreen mainScreen] scale] > 1.0) ? kRetinaRegularSourceURL : kNormalRegularSourceURL)];
+		mapView.adjustTilesForRetinaDisplay = NO;
+	}
+	
+//	mapView.zoom = currentZoom;
+//	[mapView setCenterCoordinate:currentLocation];
+
+//	RMMapView *rmv = [self mapView];
+//    RMMBTilesTileSource *tiles = [[[RMMBTilesTileSource alloc]
+//								   initWithTileSetURL:url]autorelease];
+//    [rmv.contents removeAllCachedImages];
+//    rmv.contents = [[[RMMapContents alloc] initWithView:[self mapView]
+//											 tilesource:tiles centerLatLon:currentLocation zoomLevel:currentZoom
+//										   maxZoomLevel:[tiles maxZoom] minZoomLevel:[tiles minZoom]
+//										backgroundImage:nil] autorelease];
+	
+//	[mapView moveBy:CGSizeMake(640,960)];
+//	[mapView moveBy:CGSizeMake(-640,-960)];
+	
+	[mapView addTileSource:[[[RMCoordinateGridSource alloc] init] autorelease]];
+}
+
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+		
     mapView.delegate = self;
     mapView.enableClustering = YES;
     mapView.positionClusterMarkersAtTheGravityCenter = YES;
-
-//    mapView.adjustTilesForRetinaDisplay = YES;
-//    mapView.decelerationMode = RMMapDecelerationOff;
-//    mapView.enableBouncing = NO;
-//    mapView.enableDragging = YES;
-//    mapView.debugTiles = YES;
-//    [mapView setConstraintsSouthWest:CLLocationCoordinate2DMake(47.0, 10.0) northEast:CLLocationCoordinate2DMake(48.0, 11.0)];
-//    [mapView addTileSource:[[[RMCoordinateGridSource alloc] init] autorelease]];
-
-    UIImage *clusterMarkerImage = [UIImage imageNamed:@"marker-blue.png"];
-    mapView.clusterMarkerSize = clusterMarkerImage.size;
-    mapView.clusterAreaSize = CGSizeMake(clusterMarkerImage.size.width * 1.25, clusterMarkerImage.size.height * 1.25);
-
+	
+	//    mapView.decelerationMode = RMMapDecelerationOff;
+	//    mapView.enableBouncing = NO;
+	//    mapView.enableDragging = YES;
+	//    mapView.debugTiles = YES;
+	//    [mapView setConstraintsSouthWest:CLLocationCoordinate2DMake(47.0, 10.0) northEast:CLLocationCoordinate2DMake(48.0, 11.0)];
+	//
+	//    UIImage *clusterMarkerImage = [UIImage imageNamed:@"marker-blue.png"];
+	//    mapView.clusterMarkerSize = clusterMarkerImage.size;
+	//    mapView.clusterAreaSize = CGSizeMake(clusterMarkerImage.size.width * 1.25, clusterMarkerImage.size.height * 1.25);
+	//
     center.latitude = 47.5635;
     center.longitude = 10.20981;
+	
+	[self setTileSet:YES];
+	
 
-//    int zoneNumber;
-//    BOOL isNorthernHemisphere;
-//    NSString *utmZone;
-//    double easting, northing;
-//
-//    [RMProjection convertCoordinate:center
-//                    toUTMZoneNumber:&zoneNumber
-//                      utmZoneLetter:&utmZone
-//               isNorthernHemisphere:&isNorthernHemisphere
-//                            easting:&easting
-//                           northing:&northing];
-//
-//    NSLog(@"{%f,%f} -> %d%@ %.0f %.0f (north: %@)", center.latitude, center.longitude, zoneNumber, utmZone, easting, northing, isNorthernHemisphere ? @"YES" : @"NO");
-//
-//    CLLocationCoordinate2D coordinate;
-//    [RMProjection convertUTMZoneNumber:zoneNumber
-//                         utmZoneLetter:utmZone
-//                  isNorthernHemisphere:isNorthernHemisphere
-//                               easting:easting
-//                              northing:northing
-//                          toCoordinate:&coordinate];
-//
-//    NSLog(@"-> {%f,%f}", coordinate.latitude, coordinate.longitude);
+	[mapView setZoom:10.0];
+	[mapView setCenterCoordinate:center animated:NO];
 
-//    [mapView zoomWithLatitudeLongitudeBoundsSouthWest:CLLocationCoordinate2DMake(47.5, 10.15) northEast:CLLocationCoordinate2DMake(47.6, 10.25) animated:NO];
-
+	//    int zoneNumber;
+	//    BOOL isNorthernHemisphere;
+	//    NSString *utmZone;
+	//    double easting, northing;
+	//
+	//    [RMProjection convertCoordinate:center
+	//                    toUTMZoneNumber:&zoneNumber
+	//                      utmZoneLetter:&utmZone
+	//               isNorthernHemisphere:&isNorthernHemisphere
+	//                            easting:&easting
+	//                           northing:&northing];
+	//
+	//    NSLog(@"{%f,%f} -> %d%@ %.0f %.0f (north: %@)", center.latitude, center.longitude, zoneNumber, utmZone, easting, northing, isNorthernHemisphere ? @"YES" : @"NO");
+	//
+	//    CLLocationCoordinate2D coordinate;
+	//    [RMProjection convertUTMZoneNumber:zoneNumber
+	//                         utmZoneLetter:utmZone
+	//                  isNorthernHemisphere:isNorthernHemisphere
+	//                               easting:easting
+	//                              northing:northing
+	//                          toCoordinate:&coordinate];
+	//
+	//    NSLog(@"-> {%f,%f}", coordinate.latitude, coordinate.longitude);
+	
+	//    [mapView zoomWithLatitudeLongitudeBoundsSouthWest:CLLocationCoordinate2DMake(47.5, 10.15) northEast:CLLocationCoordinate2DMake(47.6, 10.25) animated:NO];
+	
     [mapView setZoom:10.0];
     [mapView setCenterCoordinate:center animated:NO];
     mapView.showsUserLocation = YES;
-
+	
     [self updateInfo];
-    [self performSelector:@selector(addMarkers) withObject:nil afterDelay:0.5];
-
-//    // Tile bounding box
-//    RMSphericalTrapezium tileBoundingBox = [mapView latitudeLongitudeBoundingBoxForTile:RMTileMake(541, 357, 10)];
-//
-//    RMAnnotation *annotation = [RMAnnotation annotationWithMapView:mapView coordinate:tileBoundingBox.southWest andTitle:@"bbox SouthWest"];
-//    annotation.annotationIcon = [UIImage imageNamed:@"marker-red.png"];
-//    annotation.anchorPoint = CGPointMake(0.5, 1.0);
-//    annotation.clusteringEnabled = NO;
-//    [mapView addAnnotation:annotation];
-//
-//    annotation = [RMAnnotation annotationWithMapView:mapView coordinate:tileBoundingBox.northEast andTitle:@"bbox NorthEast"];
-//    annotation.annotationIcon = [UIImage imageNamed:@"marker-red.png"];
-//    annotation.anchorPoint = CGPointMake(0.5, 1.0);
-//    annotation.clusteringEnabled = NO;
-//    [mapView addAnnotation:annotation];
-
+	// [self performSelector:@selector(addMarkers) withObject:nil afterDelay:0.5];
+	
+	//    // Tile bounding box
+	//    RMSphericalTrapezium tileBoundingBox = [mapView latitudeLongitudeBoundingBoxForTile:RMTileMake(541, 357, 10)];
+	//
+	//    RMAnnotation *annotation = [RMAnnotation annotationWithMapView:mapView coordinate:tileBoundingBox.southWest andTitle:@"bbox SouthWest"];
+	//    annotation.annotationIcon = [UIImage imageNamed:@"marker-red.png"];
+	//    annotation.anchorPoint = CGPointMake(0.5, 1.0);
+	//    annotation.clusteringEnabled = NO;
+	//    [mapView addAnnotation:annotation];
+	//
+	//    annotation = [RMAnnotation annotationWithMapView:mapView coordinate:tileBoundingBox.northEast andTitle:@"bbox NorthEast"];
+	//    annotation.annotationIcon = [UIImage imageNamed:@"marker-red.png"];
+	//    annotation.anchorPoint = CGPointMake(0.5, 1.0);
+	//    annotation.clusteringEnabled = NO;
+	//    [mapView addAnnotation:annotation];
+	
     // Tile sources
-//    [mapView setTileSources:@[
-//     [[[RMOpenStreetMapSource alloc] init] autorelease],
-//     [[[RMOpenSeaMapLayer alloc] init] autorelease]
-//     ]];
-
-//    double delayInSeconds = 5.0;
-//    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-//    dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-//        [mapView addTileSource:[[[RMCoordinateGridSource alloc] init] autorelease]];
-//
-//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-//        dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-//            [mapView setHidden:YES forTileSourceAtIndex:1];
-//
-//            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-//            dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-//                [mapView setHidden:NO forTileSourceAtIndex:1];
-//
-//                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-//                dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-//                    [mapView removeTileSourceAtIndex:1];
-//                });
-//            });
-//        });
-//    });
+	//    [mapView setTileSources:@[
+	//     [[[RMOpenStreetMapSource alloc] init] autorelease],
+	//     [[[RMOpenSeaMapLayer alloc] init] autorelease]
+	//     ]];
+	
+	//    double delayInSeconds = 5.0;
+	//    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	//    dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+	//        [mapView addTileSource:[[[RMCoordinateGridSource alloc] init] autorelease]];
+	//
+	//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	//        dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+	//            [mapView setHidden:YES forTileSourceAtIndex:1];
+	//
+	//            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	//            dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+	//                [mapView setHidden:NO forTileSourceAtIndex:1];
+	//
+	//                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	//                dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+	//                    [mapView removeTileSourceAtIndex:1];
+	//                });
+	//            });
+	//        });
+	//    });
 }
 
 - (void)didReceiveMemoryWarning
@@ -236,8 +296,8 @@
 
 - (void)dealloc
 {
-    self.infoTextView = nil; 
-    self.mapView = nil; 
+    self.infoTextView = nil;
+    self.mapView = nil;
     self.mppLabel = nil;
     [super dealloc];
 }
@@ -245,7 +305,7 @@
 - (void)updateInfo
 {
     CLLocationCoordinate2D mapCenter = [mapView centerCoordinate];
-
+	
     [infoTextView setText:[NSString stringWithFormat:@"Longitude : %f\nLatitude : %f\nZoom level : %.2f\nScale : 1:%.0f\n%@",
                            mapCenter.longitude,
                            mapCenter.latitude,
@@ -253,7 +313,7 @@
                            mapView.scaleDenominator,
 						   [[mapView tileSource] shortAttribution]
 						   ]];
-
+	
     [mppLabel setText:[NSString stringWithFormat:@"%.0f m", mapView.metersPerPixel * mppImage.bounds.size.width]];
 }
 
@@ -283,14 +343,14 @@
         NSLog(@"Start dragging marker");
         return YES;
     }
-
+	
     return NO;
 }
 
 - (void)mapView:(RMMapView *)map didDragAnnotation:(RMAnnotation *)annotation withDelta:(CGPoint)delta
 {
     CGPoint screenPosition = CGPointMake(annotation.position.x - delta.x, annotation.position.y - delta.y);
-
+	
     annotation.coordinate = [mapView pixelToCoordinate:screenPosition];
     annotation.position = screenPosition;
 }
@@ -299,7 +359,7 @@
 {
     RMProjectedPoint projectedPoint = annotation.projectedLocation;
     CGPoint screenPoint = annotation.position;
-
+	
     NSLog(@"Did end dragging marker, screen: {%.0f,%.0f}, projected: {%f,%f}, coordinate: {%f,%f}", screenPoint.x, screenPoint.y, projectedPoint.x, projectedPoint.y, annotation.coordinate.latitude, annotation.coordinate.longitude);
 }
 
@@ -316,7 +376,7 @@
 {
     RMProjectedPoint projectedPoint = [map pixelToProjectedPoint:point];
     CLLocationCoordinate2D coordinates =  [map pixelToCoordinate:point];
-
+	
     NSLog(@"Clicked on Map - Location: x:%lf y:%lf, Projected east:%f north:%f, Coordinate lat:%f lon:%f", point.x, point.y, projectedPoint.x, projectedPoint.y, coordinates.latitude, coordinates.longitude);
 }
 
@@ -329,7 +389,7 @@
     else if ([annotation.annotationType isEqualToString:kDraggableAnnotationType])
     {
         NSLog(@"MARKER TAPPED!");
-
+		
         if (!tapped)
         {
             annotation.annotationIcon = [UIImage imageNamed:@"marker-red.png"];
@@ -350,11 +410,11 @@
 - (RMMapLayer *)mapView:(RMMapView *)aMapView layerForAnnotation:(RMAnnotation *)annotation
 {
     RMMapLayer *marker = nil;
-
+	
     if ([annotation.annotationType isEqualToString:kRMClusterAnnotationTypeName])
     {
         marker = [[[RMMarker alloc] initWithUIImage:[UIImage imageNamed:@"marker-blue.png"] anchorPoint:CGPointMake(0.5, 1.0)] autorelease];
-
+		
         if (annotation.title)
             [(RMMarker *)marker changeLabelUsingText:annotation.title];
     }
@@ -366,17 +426,17 @@
     else
     {
         marker = [[[RMMarker alloc] initWithUIImage:annotation.annotationIcon anchorPoint:annotation.anchorPoint] autorelease];
-
+		
         if (annotation.title)
             [(RMMarker *)marker changeLabelUsingText:annotation.title];
-
+		
         if ([annotation.userInfo objectForKey:@"foregroundColor"])
             [(RMMarker *)marker setTextForegroundColor:[annotation.userInfo objectForKey:@"foregroundColor"]];
-
+		
         if ([annotation.annotationType isEqualToString:kDraggableAnnotationType])
             marker.enableDragging = YES;
     }
-
+	
     return marker;
 }
 
