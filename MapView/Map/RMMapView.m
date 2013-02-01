@@ -46,6 +46,7 @@
 
 #import "RMMapTiledLayerView.h"
 #import "RMMapOverlayView.h"
+#import "RMLoadingTileView.h"
 
 #import "RMUserLocation.h"
 
@@ -129,6 +130,7 @@
     RMMapScrollView *_mapScrollView;
     RMMapOverlayView *_overlayView;
     UIView *_tiledLayersSuperview;
+    RMLoadingTileView *_loadingTileView;
 
     RMProjection *_projection;
     RMFractalTileProjection *_mercatorToTileProjection;
@@ -220,10 +222,17 @@
 
     [self setTileCache:[[[RMTileCache alloc] init] autorelease]];
 
-    [self setBackgroundView:[[[UIView alloc] initWithFrame:[self bounds]] autorelease]];
     if (backgroundImage)
+    {
+        [self setBackgroundView:[[[UIView alloc] initWithFrame:[self bounds]] autorelease]];
         self.backgroundView.layer.contents = (id)backgroundImage.CGImage;
-
+    }
+    else
+    {
+        _loadingTileView = [[[RMLoadingTileView alloc] initWithFrame:self.bounds] autorelease];
+        [self setBackgroundView:_loadingTileView];
+    }
+	
     if (initialTileSourceMinZoomLevel < newTilesource.minZoom) initialTileSourceMinZoomLevel = newTilesource.minZoom;
     if (initialTileSourceMaxZoomLevel > newTilesource.maxZoom) initialTileSourceMaxZoomLevel = newTilesource.maxZoom;
     [self setTileSourcesMinZoom:initialTileSourceMinZoomLevel];
@@ -1093,6 +1102,9 @@
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view
 {
     _mapScrollViewIsZooming = YES;
+	
+	if (_loadingTileView)
+        _loadingTileView.mapZooming = YES;
 
     if (_delegateHasBeforeMapZoom)
         [_delegate beforeMapZoom:self];
@@ -1103,6 +1115,19 @@
     _mapScrollViewIsZooming = NO;
 
     [self correctPositionOfAllAnnotations];
+
+    if (_loadingTileView)
+        _loadingTileView.mapZooming = NO;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (_loadingTileView)
+    {
+        CGSize delta = CGSizeMake(scrollView.contentOffset.x - _lastContentOffset.x, scrollView.contentOffset.y - _lastContentOffset.y);
+        CGPoint newOffset = CGPointMake(_loadingTileView.contentOffset.x + delta.width, _loadingTileView.contentOffset.y + delta.height);
+        _loadingTileView.contentOffset = newOffset;
+    }
 }
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView
@@ -1631,9 +1656,10 @@
 
     _constrainMovement = !(bounds.northEast.latitude == 90.0 && bounds.northEast.longitude == 180.0 && bounds.southWest.latitude == -90.0 && bounds.southWest.longitude == -180.0);
 
-    if (_constrainMovement)
-        _constrainingProjectedBounds = (RMProjectedRect)[self projectedRectFromLatitudeLongitudeBounds:bounds];
-    else
+	// WD causes a bug when initialising with MapBox
+//    if (_constrainMovement)
+//        _constrainingProjectedBounds = (RMProjectedRect)[self projectedRectFromLatitudeLongitudeBounds:bounds];
+//    else
         _constrainingProjectedBounds = _projection.planetBounds;
 
     [self setTileSourcesMinZoom:_tileSourcesContainer.minZoom];
