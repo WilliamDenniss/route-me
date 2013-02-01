@@ -37,10 +37,10 @@
 		2B70CB7A0F856A46002BAF97 /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B70CB790F856A46002BAF97 /* loading.png */; };
 		BE366C871664DE60007B60AD /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BE366C861664DE60007B60AD /* Default-568h@2x.png */; };
 		BE366C8E1664F710007B60AD /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BE366C8D1664F710007B60AD /* Icon@2x.png */; };
+		BE366CAC166506EC007B60AD /* libMapView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE3697D0F673B95003DC21C /* libMapView.a */; };
 		EBDDE0E00F649CE100377FFE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBDDE0DF0F649CE100377FFE /* CoreLocation.framework */; };
 		EBDDE0E20F649CE100377FFE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBDDE0E10F649CE100377FFE /* QuartzCore.framework */; };
 		EBDDE0E40F649CE100377FFE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EBDDE0E30F649CE100377FFE /* libsqlite3.dylib */; };
-		EBE3697E0F673B9A003DC21C /* libMapView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE3697D0F673B95003DC21C /* libMapView.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,13 +111,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE366CAC166506EC007B60AD /* libMapView.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765590DF743DE002DB57D /* CoreGraphics.framework in Frameworks */,
 				EBDDE0E00F649CE100377FFE /* CoreLocation.framework in Frameworks */,
 				EBDDE0E20F649CE100377FFE /* QuartzCore.framework in Frameworks */,
 				EBDDE0E40F649CE100377FFE /* libsqlite3.dylib in Frameworks */,
-				EBE3697E0F673B9A003DC21C /* libMapView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

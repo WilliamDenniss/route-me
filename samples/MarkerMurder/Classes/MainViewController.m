@@ -231,7 +231,7 @@
     mapView.showsUserLocation = YES;
 	
     [self updateInfo];
-	// [self performSelector:@selector(addMarkers) withObject:nil afterDelay:0.5];
+	 [self performSelector:@selector(addMarkers) withObject:nil afterDelay:0.5];
 	
 	//    // Tile bounding box
 	//    RMSphericalTrapezium tileBoundingBox = [mapView latitudeLongitudeBoundingBoxForTile:RMTileMake(541, 357, 10)];
