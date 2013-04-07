@@ -66,7 +66,7 @@
 
 - (NSString *)shortAttribution
 {
-	return @"© OpenStreetMap CC-BY-SA";
+	return @"© OpenStreetMap (ODbL)";
 }
 
 - (NSString *)longAttribution
