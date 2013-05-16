@@ -29,8 +29,6 @@
 #import "RMMapLayer.h"
 #import "RMFoundation.h"
 
-@class RMMarkerStyle;
-
 // one marker drawn on the map. Note that RMMarker ultimately descends from CALayer, and has an image contents.
 // RMMarker inherits "position" and "anchorPoint" from CALayer.
 @interface RMMarker : RMMapLayer
