@@ -317,7 +317,7 @@ static NSMutableDictionary *predicateValues = nil;
 
 - (id <RMTileCache>)databaseCacheWithConfig:(NSDictionary *)cfg
 {
-    BOOL useCacheDir = NO;
+    BOOL useCacheDir = YES;
     RMCachePurgeStrategy strategy = RMCachePurgeStrategyFIFO;
 
     NSUInteger capacity = 1000;

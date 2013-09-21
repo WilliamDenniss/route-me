@@ -115,7 +115,12 @@
 	RMLog(@"Opening database at %@", path);
 
     _queue = [[FMDatabaseQueue databaseQueueWithPath:path] retain];
-
+	{
+		// https://developer.apple.com/library/ios/qa/qa1719/_index.html
+		NSURL* fileURL = [NSURL fileURLWithPath:path isDirectory:NO];
+		[self addSkipBackupAttributeToItemAtURL:fileURL];
+	}
+	
 	if (!_queue)
 	{
 		RMLog(@"Could not connect to database");
@@ -137,6 +142,7 @@
 
 	return self;	
 }
+
 
 - (id)initUsingCacheDir:(BOOL)useCacheDir
 {
@@ -405,6 +411,19 @@
     [_writeQueueLock lock];
     [_writeQueue cancelAllOperations];
     [_writeQueueLock unlock];
+}
+
+- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL
+{
+    //assert([[NSFileManager defaultManager] fileExistsAtPath: [URL path]]);
+	
+    NSError *error = nil;
+    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]
+                                  forKey: NSURLIsExcludedFromBackupKey error: &error];
+    if(!success){
+        NSLog(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
+    }
+    return success;
 }
 
 @end
