@@ -170,6 +170,11 @@
 	_capacity = theCapacity;
 }
 
+- (NSUInteger)capacity
+{
+    return _capacity;
+}
+
 - (void)setMinimalPurge:(NSUInteger)theMinimalPurge
 {
 	_minimalPurge = theMinimalPurge;

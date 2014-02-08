@@ -1,7 +1,7 @@
 //
 //  RMAbstractMercatorTileSource.m
 //
-// Copyright (c) 2008-2012, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -71,6 +71,11 @@
                                    reason:@"imageForTile:inCache: invoked on RMAbstractMercatorTileSource. Override this method when instantiating an abstract class."
                                  userInfo:nil];
 }    
+
+- (BOOL)tileSourceHasTile:(RMTile)tile
+{
+    return YES;
+}
 
 - (void)cancelAllDownloads
 {

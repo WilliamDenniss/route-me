@@ -1,7 +1,7 @@
 //
 //  RMBingSource.m
 //
-// Copyright (c) 2008-2012, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,15 +44,15 @@
     if (self = [super init])
     {
         _mapsKey = [mapsKey retain];
-		
+
         _imagerySet = imagerySet;
-		
+
         self.minZoom = 1;
         self.maxZoom = 21;
-		
+
         return self;
     }
-	
+
     return nil;
 }
 
@@ -68,58 +68,58 @@
     if ( ! _imageURLString)
     {
         NSString *imagerySetString = nil;
-		
+
         if (_imagerySet == RMBingImagerySetAerial)
             imagerySetString = @"Aerial";
         else if (_imagerySet == RMBingImagerySetAerialWithLabels)
             imagerySetString = @"AerialWithLabels";
         else
             imagerySetString = @"Road";
-		
+
         NSURL *metadataURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://dev.virtualearth.net/REST/v1/Imagery/Metadata/%@?key=%@", imagerySetString, _mapsKey]];
-		
+
         NSData *metadataData = [NSData dataWithContentsOfURL:metadataURL];
-		
+
         id metadata = [NSJSONSerialization JSONObjectWithData:metadataData options:0 error:nil];
-		
+
         if (metadata && [metadata isKindOfClass:[NSDictionary class]] && [[metadata objectForKey:@"statusCode"] intValue] == 200)
         {
             NSDictionary *resources = [[[[(NSDictionary *)metadata objectForKey:@"resourceSets"] objectAtIndex:0] objectForKey:@"resources"] objectAtIndex:0];
-			
+
             _imageURLString = [[[resources objectForKey:@"imageUrl"] stringByReplacingOccurrencesOfString:@"{subdomain}"
                                                                                                withString:[[resources objectForKey:@"imageUrlSubdomains"] objectAtIndex:0]] copy];
         }
     }
-	
+
     if ( ! _imageURLString)
         return nil;
-	
+
     NSMutableString *tileURLString = [NSMutableString stringWithString:_imageURLString];
-	
+
     [tileURLString replaceOccurrencesOfString:@"{culture}" withString:@"en" options:0 range:NSMakeRange(0, [tileURLString length])];
-	
+
     NSMutableString *quadKey = [NSMutableString string];
-	
+
     for (int i = tile.zoom; i > 0; i--)
     {
         int digit = 0;
-		
+
         int mask = 1 << (i - 1);
-		
+
         if ((tile.x & mask) != 0)
             digit++;
-		
+
         if ((tile.y & mask) != 0)
         {
             digit++;
             digit++;
         }
-		
+
         [quadKey appendString:[NSString stringWithFormat:@"%i", digit]];
     }
-	
+
     [tileURLString replaceOccurrencesOfString:@"{quadkey}" withString:quadKey options:0 range:NSMakeRange(0, [tileURLString length])];
-	
+
     return [NSURL URLWithString:tileURLString];
 }
 

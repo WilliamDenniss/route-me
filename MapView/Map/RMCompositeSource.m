@@ -2,7 +2,7 @@
 //  RMCompositeSource.m
 //  MapView
 //
-// Copyright (c) 2008-2012, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -140,7 +140,7 @@
     {
         id <RMTileSource> tileSource = [_tileSources objectAtIndex:u];
 
-        if (tile.zoom < tileSource.minZoom || tile.zoom > tileSource.maxZoom)
+        if (tile.zoom < tileSource.minZoom || tile.zoom > tileSource.maxZoom || ![tileSource tileSourceHasTile:tile])
             continue;
 
         UIImage *tileImage = [tileSource imageForTile:tile inCache:tileCache];

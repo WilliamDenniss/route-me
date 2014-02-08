@@ -1,7 +1,7 @@
 //
 // RouteMe.h
 // 
-// Copyright (c) 2008-2012, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,9 +32,11 @@
 #import "RMAbstractMercatorTileSource.h"
 #import "RMAbstractWebMapSource.h"
 #import "RMAnnotation.h"
+#import "RMBingSource.h"
 #import "RMCacheObject.h"
 #import "RMCircle.h"
 #import "RMConfiguration.h"
+#import "RMCompositeSource.h"
 #import "RMCoordinateGridSource.h"
 #import "RMDBMapSource.h"
 #import "RMDatabaseCache.h"
@@ -42,6 +44,7 @@
 #import "RMFractalTileProjection.h"
 #import "RMGenericMapSource.h"
 #import "RMGlobalConstants.h"
+#import "RMLoadingTileView.h"
 #import "RMMapLayer.h"
 #import "RMMapOverlayView.h"
 #import "RMMapQuestOSMSource.h"
@@ -57,13 +60,13 @@
 #import "RMOpenSeaMapLayer.h"
 #import "RMOpenSeaMapSource.h"
 #import "RMOpenStreetMapSource.h"
-#import "RMPath.h"
 #import "RMPixel.h"
 #import "RMProjection.h"
 #import "RMQuadTree.h"
 #import "RMShape.h"
 #import "RMTile.h"
 #import "RMTileCache.h"
+#import "RMTileCacheDownloadOperation.h"
 #import "RMTileImage.h"
 #import "RMTileSource.h"
 #import "RMTileSourcesContainer.h"

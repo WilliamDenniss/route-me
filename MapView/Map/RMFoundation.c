@@ -1,7 +1,7 @@
 //
 //  RMFoundation.c
 //
-// Copyright (c) 2008-2012, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -178,6 +178,31 @@ RMProjectedRect RMProjectedRectUnion(RMProjectedRect rect1, RMProjectedRect rect
     return RMProjectedRectMake(minX, minY, maxX - minX, maxY - minY);
 }
 
+// Rect intersection
+RMProjectedRect RMProjectedRectIntersection(RMProjectedRect rect1, RMProjectedRect rect2)
+{
+    bool rect1IsZero = RMProjectedRectIsZero(rect1);
+    bool rect2IsZero = RMProjectedRectIsZero(rect2);
+
+    if (rect1IsZero)
+        return (rect2IsZero ? RMProjectedRectZero() : rect2);
+
+    if (rect2IsZero)
+        return rect1;
+
+    if ( ! RMProjectedRectIntersectsProjectedRect(rect1, rect2))
+        return RMProjectedRectZero();
+
+    double minX, maxX, minY, maxY;
+
+    minX = RMMAX(rect1.origin.x, rect2.origin.x);
+    minY = RMMAX(rect1.origin.y, rect2.origin.y);
+    maxX = RMMIN(rect1.origin.x + rect1.size.width, rect2.origin.x + rect2.size.width);
+    maxY = RMMIN(rect1.origin.y + rect1.size.height, rect2.origin.y + rect2.size.height);
+
+    return RMProjectedRectMake(minX, minY, maxX - minX, maxY - minY);
+}
+
 // apparently, this doesn't work well with coordinates on a sphere, but it might be appropriate for a quick estimation
 double RMEuclideanDistanceBetweenProjectedPoints(RMProjectedPoint point1, RMProjectedPoint point2)
 {
@@ -197,4 +222,9 @@ void RMLogProjectedPoint(RMProjectedPoint point)
 void RMLogProjectedRect(RMProjectedRect rect)
 {
     printf("ProjectedRect at (%.0f,%.0f), size (%.0f,%.0f)\n", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+}
+
+void RMLogProjectedSize(RMProjectedSize size)
+{
+    printf("ProjectedSize (%.0f,%.0f)\n", size.width, size.height);
 }
