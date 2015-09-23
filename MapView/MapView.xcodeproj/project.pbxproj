@@ -92,6 +92,7 @@
 		BED6F9ED16BC18010030B5F4 /* RMBingSource.m in Sources */ = {isa = PBXBuildFile; fileRef = BED6F9EB16BC18010030B5F4 /* RMBingSource.m */; };
 		BEE0FB431666368D007CFAF0 /* RMLoadingTileView.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE0FB411666368D007CFAF0 /* RMLoadingTileView.m */; };
 		BEE0FB441666368D007CFAF0 /* RMLoadingTileView.h in Headers */ = {isa = PBXBuildFile; fileRef = BEE0FB421666368D007CFAF0 /* RMLoadingTileView.h */; };
+		D0AEFE921BB2812500C90944 /* libProj4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEAF3DAE18A697FB00E06B10 /* libProj4.a */; };
 		D1437B36122869E400888DAE /* RMDBMapSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D1437B32122869E400888DAE /* RMDBMapSource.m */; };
 		D1437B37122869E400888DAE /* RMDBMapSource.h in Headers */ = {isa = PBXBuildFile; fileRef = D1437B33122869E400888DAE /* RMDBMapSource.h */; };
 		DD1E3C6E161F954F004FC649 /* SMCalloutView.h in Headers */ = {isa = PBXBuildFile; fileRef = DD1E3C6C161F954F004FC649 /* SMCalloutView.h */; };
@@ -279,6 +280,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0AEFE921BB2812500C90944 /* libProj4.a in Frameworks */,
 				B8C974500E8A19B2007D16AD /* CoreFoundation.framework in Frameworks */,
 				B8C974510E8A19B2007D16AD /* CoreGraphics.framework in Frameworks */,
 				B8C974520E8A19B2007D16AD /* CoreLocation.framework in Frameworks */,
