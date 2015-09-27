@@ -233,6 +233,7 @@
 		BE366C891664E467007B60AD /* RMMapBoxSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMMapBoxSource.m; sourceTree = "<group>"; };
 		BEAF3D8218A68B0C00E06B10 /* RMPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMPath.h; sourceTree = "<group>"; };
 		BEAF3DA918A697FB00E06B10 /* Proj4.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Proj4.xcodeproj; path = ../Proj4/Proj4.xcodeproj; sourceTree = "<group>"; };
+		BED2DFDE1BB66B8800F08573 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		BED6F9EA16BC18010030B5F4 /* RMBingSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMBingSource.h; sourceTree = "<group>"; };
 		BED6F9EB16BC18010030B5F4 /* RMBingSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMBingSource.m; sourceTree = "<group>"; };
 		BEE0FB411666368D007CFAF0 /* RMLoadingTileView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMLoadingTileView.m; sourceTree = "<group>"; };
@@ -359,6 +360,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BED2DFDE1BB66B8800F08573 /* libsqlite3.tbd */,
 				B83E65590E80E7EB001663B6 /* CoreFoundation.framework */,
 				288765A40DF7441C002DB57D /* CoreGraphics.framework */,
 				B83E65630E80E81C001663B6 /* CoreLocation.framework */,
