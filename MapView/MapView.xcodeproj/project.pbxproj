@@ -88,6 +88,7 @@
 		BE366C8A1664E467007B60AD /* RMMapBoxSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BE366C881664E467007B60AD /* RMMapBoxSource.h */; };
 		BE366C8B1664E467007B60AD /* RMMapBoxSource.m in Sources */ = {isa = PBXBuildFile; fileRef = BE366C891664E467007B60AD /* RMMapBoxSource.m */; };
 		BEAF3D8518A68B0C00E06B10 /* RMPath.h in Headers */ = {isa = PBXBuildFile; fileRef = BEAF3D8218A68B0C00E06B10 /* RMPath.h */; };
+		BEC2F7DB1E987AF1004BDB01 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BEC2F7DA1E987AF1004BDB01 /* Info.plist */; };
 		BED6F9EC16BC18010030B5F4 /* RMBingSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BED6F9EA16BC18010030B5F4 /* RMBingSource.h */; };
 		BED6F9ED16BC18010030B5F4 /* RMBingSource.m in Sources */ = {isa = PBXBuildFile; fileRef = BED6F9EB16BC18010030B5F4 /* RMBingSource.m */; };
 		BEE0FB431666368D007CFAF0 /* RMLoadingTileView.m in Sources */ = {isa = PBXBuildFile; fileRef = BEE0FB411666368D007CFAF0 /* RMLoadingTileView.m */; };
@@ -233,6 +234,7 @@
 		BE366C891664E467007B60AD /* RMMapBoxSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMMapBoxSource.m; sourceTree = "<group>"; };
 		BEAF3D8218A68B0C00E06B10 /* RMPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMPath.h; sourceTree = "<group>"; };
 		BEAF3DA918A697FB00E06B10 /* Proj4.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Proj4.xcodeproj; path = ../Proj4/Proj4.xcodeproj; sourceTree = "<group>"; };
+		BEC2F7DA1E987AF1004BDB01 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BED2DFDE1BB66B8800F08573 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		BED6F9EA16BC18010030B5F4 /* RMBingSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMBingSource.h; sourceTree = "<group>"; };
 		BED6F9EB16BC18010030B5F4 /* RMBingSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMBingSource.m; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				BEC2F7DA1E987AF1004BDB01 /* Info.plist */,
 				B8C9740D0E8A196E007D16AD /* Map */,
 				DD932BC2165C294100D69D49 /* Externals */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -690,6 +693,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0460;
+				TargetAttributes = {
+					DD6A83741644A20C0097F31F = {
+						DevelopmentTeam = 47PX6R5WDH;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MapView" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -745,6 +754,7 @@
 				DD932BBE165C287000D69D49 /* TrackingHeading@2x.png in Resources */,
 				DD932BBF165C287000D69D49 /* TrackingLocation.png in Resources */,
 				DD932BC0165C287000D69D49 /* TrackingLocation@2x.png in Resources */,
+				BEC2F7DB1E987AF1004BDB01 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -948,6 +958,8 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 47PX6R5WDH;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -977,7 +989,9 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 47PX6R5WDH;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
